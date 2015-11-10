@@ -13,13 +13,17 @@ symlink_files() {
 }
 
 # Backup the ~/.vim directory and link the new one.
-if [[ -d "$HOME/.vim" ]]; then
-  if [[ -d "$HOME/.vim-whatyouhide-bkp" ]]; then
-    rm -rfv "$HOME/.vim"
-  else
-    mv "$HOME/.vim" "$HOME/.vim-whatyouhide-bkp"
+if [[ -d "$HOME/.vim" || -f "$HOME/.vimrc" || -f "$HOME/.gvimrc" ]]; then
+  echo "~/.vim, ~/.vimrc or ~/.gvimrc detected; running this script will override all of them."
+  read -p "Continue? [yn] " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+    exit 1
   fi
 fi
+
+rm -rfv "$HOME/.vimrc" "$HOME/.gvimrc" "$HOME/.vim"
 
 ln -sfv "$ROOT" "$HOME/.vim"
 
